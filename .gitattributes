@@ -1,4 +1,4 @@
-lib linguist-vendored
+lib/* linguist-vendored=true
 
 Particles.sln linguist-generated=true
 Particles.vcxproj linguist-generated=true
