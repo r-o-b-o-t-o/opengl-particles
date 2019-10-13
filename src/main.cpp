@@ -1,6 +1,11 @@
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
+#include "stb_image.h"
+#include "stb_image_write.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -13,6 +18,7 @@
 void onError(int error, const char* description);
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void scrollCallback(GLFWwindow* window, double offsetX, double offsetY);
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 int main(int argc, char** argv) {
 	glfwSetErrorCallback(onError);
@@ -32,6 +38,7 @@ int main(int argc, char** argv) {
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 	glfwSetScrollCallback(window, scrollCallback);
+	glfwSetKeyCallback(window, keyCallback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cerr << "Failed to initialize GLAD." << std::endl;
@@ -169,4 +176,13 @@ void scrollCallback(GLFWwindow* window, double offsetX, double offsetY) {
 
 	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
 	app->camera.zoom(static_cast<float>(offsetY));
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (ImGui::IsAnyWindowHovered() || ImGui::GetIO().WantCaptureMouse) {
+		return;
+	}
+
+	Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
+	app->onKeyEvent(window, key, scancode, action, mods);
 }

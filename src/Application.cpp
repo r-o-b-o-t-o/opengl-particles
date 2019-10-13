@@ -1,4 +1,6 @@
+#include <time.h>
 #include "Application.h"
+#include "stb_image_write.h"
 
 Application::Application(int screenWidth, int screenHeight) :
 		debugWindow(this),
@@ -31,10 +33,6 @@ void Application::drawUi() {
 
 void Application::update(GLFWwindow* window, float deltaTime) {
 	this->camera.update(window);
-
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
-	}
 }
 
 void Application::onWindowSizeChanged(int width, int height) {
@@ -56,4 +54,41 @@ int Application::getScreenWidth() const {
 
 int Application::getScreenHeight() const {
 	return this->screenHeight;
+}
+
+void Application::onKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+	}
+
+	if (key == GLFW_KEY_PRINT_SCREEN && action == GLFW_PRESS) {
+		this->takeScreenshot();
+	}
+}
+
+void Application::takeScreenshot() const {
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	int x = viewport[0];
+	int y = viewport[1];
+	int width = viewport[2];
+	int height = viewport[3];
+
+	char* data = new char[width * height * 3];
+	if (data != nullptr) {
+		time_t now = time(nullptr);
+		tm localTime;
+		char fileName[40];
+		localtime_s(&localTime, &now);
+		strftime(fileName, 40, "screenshots/%Y%m%d_%H%M%S.png", &localTime);
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+		stbi_flip_vertically_on_write(1);
+		int saved = stbi_write_png(fileName, width, height, 3, data, 0);
+
+		delete[] data;
+	}
 }

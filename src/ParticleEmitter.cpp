@@ -79,7 +79,7 @@ ParticleEmitter::~ParticleEmitter() {
 }
 
 void ParticleEmitter::generateParticles(float dt) {
-	int n = static_cast<unsigned long>(dt * this->spawnRate);
+	auto n = static_cast<unsigned long>(dt * this->spawnRate);
 	unsigned long idx;
 	for (unsigned long i = 0; i < n; ++i) {
 		if (this->findUnusedIndex(&idx)) {

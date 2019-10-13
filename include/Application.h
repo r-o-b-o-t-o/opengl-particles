@@ -30,11 +30,13 @@ public:
 	void update(GLFWwindow* window, float deltaTime);
 	void onWindowSizeChanged(int width, int height);
 	void drawParticles();
+	void onKeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 	int getScreenWidth() const;
 	int getScreenHeight() const;
 
 private:
 	void drawUi();
+	void takeScreenshot() const;
 
 	int screenWidth;
 	int screenHeight;
