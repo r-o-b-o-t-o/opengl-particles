@@ -1,0 +1,5 @@
+lib linguist-vendored
+
+Particles.sln linguist-generated=true
+Particles.vcxproj linguist-generated=true
+Particles.vcxproj.filters linguist-generated=true
